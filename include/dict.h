@@ -32,29 +32,78 @@ class DAL
         virtual ~DAL()
         { delete [] mpt_Data;};
 
+        /*! remove from list the element associated with key _k,
+         * and saves in _s
+         * 
+         * @param _k key to be removed
+         * @param _s saves the value to be removed
+         * 
+         * @return true if finds teh element.
+         * 
+         */
+
+        bool remove ( const Key & _k, Data & _s );
         
+        /*! Search the element from key _k.
+         * 
+         * @param _k key to be searched.
+         * @param _s saves the key to be searched.
+         * 
+         * @return true if the _k is in the list .
+         */
 
-        bool remove ();
+        bool search ( const Key & _k, Data & _s) const; // Public Search
 
+        /*! Inserts int the list the element for key _newID and info _newInfo.
+         *
+         * @param _newKey, key to be inserted.
+         * @param _newInfo, value to be inserted
+         * 
+         * @return true if success, otherwise false 
+         */
 
-        bool search ();
+        bool insert ( const Key & _newKey, const Data & _newInfo);
 
-
-        bool insert ();
-
+        /*! Recovers the minor key value in the list .
+         *
+         * return -1 if the list is empty, otherwise the key value
+         * 
+        */
 
         Key min () const;
 
+        
+        /*! Recovers the bigger key value in the list .
+         *
+         * return -1 if the list is empty, otherwise the key value
+         * 
+        */
 
         Key max () const;
 
+        /*! recovers in _y, the sucessor for key _k
+         *
+         * @param _k, the key to be found
+         * @param _y, the sucessor for _k
+         * 
+         * @return true if finds.
+         */
 
-        bool sucessor () const;
+        bool sucessor ( const Key & _k, Key _y) const;
+        
+        /*! recovers in _y, the predecessor for key _k
+         *
+         * @param _k, the key to be found
+         * @param _y, the predecessor for _k
+         * 
+         * @return true if finds.
+         */
 
 
-        bool predecessor () const;
+        bool predecessor ( const Key & _k, Key _y ) const;
 
 
+        //! Overload of operator<< for prints the list(Dictionary)
         inline friend
         std::ostream &operator <<( std::ostream& _os, const DAL & _oList)
         {
@@ -88,22 +137,65 @@ class DSAL : public DAL < Key, Data, KeyCompar>{
         virtual ~DSAL()
         {/* empty */};
 
-        bool remove();
+        /*! remove from list the element associated with key _k,
+         * and saves in _s
+         * 
+         * @param _k key to be removed
+         * @param _s saves the value to be removed
+         * 
+         * @return true if finds teh element.
+         * 
+         */
 
+        bool remove( const Key & _k, Data & _s);
 
-        bool insert();
-
+        /*! Recovers the minor key value in the list .
+         *
+         * return -1 if the list is empty, otherwise the key value
+         * 
+        */
 
         Key min() const;
 
+
+        /*! Recovers the bigger key value in the list .
+         *
+         * return -1 if the list is empty, otherwise the key value
+         * 
+        */
     
         Key max() const;
 
+        /*! recovers in _y, the sucessor for key _k
+         *
+         * @param _k, the key to be found
+         * @param _y, the sucessor for _k
+         * 
+         * @return true if finds
+         */
 
-        bool sucessor() const;
+        bool sucessor( const Key & _k, Key & _y) const;
+
+        /*! recovers in _y, the predecessor for key _k
+         *
+         * @param _k, the key to be found
+         * @param _y, the predecessor for _k
+         * 
+         * @return true if finds
+         */
 
 
-        bool predecessor() const;
+        bool predecessor( const Key & _k, Key & _y) const;
+
+        /*! Inserts int the list the element for key _newID and info _newInfo.
+         *
+         * @param _newID, key to be inserted.
+         * @param _newInfo, value to be inserted
+         * 
+         * @return true if success, otherwise false 
+         */
+
+        bool insert( const Key & _newID, const Data & _newInfo );
 
     private:
 
@@ -112,8 +204,6 @@ class DSAL : public DAL < Key, Data, KeyCompar>{
 
 };
 
-
-
-
+#include "dict.inl"
 
 #endif
