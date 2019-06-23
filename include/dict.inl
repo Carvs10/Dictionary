@@ -177,5 +177,267 @@ Key DAL< Key, Data, KeyCompar >::max() const
         return bigger;
     }
 
+}
+
+
+template <typename Key, typename Data, typename KeyCompar >
+bool DAL< Key, Data, KeyCompar >::sucessor( const & Key & _k, Key & _y) const
+{
+
+    // Checks for an empty list.
+    if( m_size == 0 )
+    {
+        return false;
+    }
+
+    // Check if the elements is the bigger, for this case, it wouldn't have a succes.
+    if( _k == max() )
+    {
+        return false;
+    }
+
+    // The element isn't in the dicionary.
+    if( _find(_k) == -1)
+    {
+        return false;
+    }
+
+    KeyCompar comp;
+
+    int succ = max();
+    int curr;
+
+
+    for(int i = 0; i < m_size; i++)
+    {
+
+        curr = mpt_Data[i].id;
+        if( comp( _k, curr ) and comp( curr, succ ) )
+        {
+            succ = curr;
+        }
+    }
+
+    _y = succ;
+    return true;
 
 }
+
+template <typename Key, typename Data, typename KeyCompar >
+bool DAL< Key, Data, KeyCompar >::predecessor( const Key & _k, Key & _y)
+{
+
+    // Checks for an empty list.
+    if( m_size == 0 )
+    {
+        return false;
+    }
+
+    // Check if the elements is the minor, for this case, it wouldn't have a predece.
+    if( _k == min() )
+    {
+        return false;
+    }
+
+    // The element isn't in the dicionary.
+    if( _find(_k) == -1 )
+    {
+        return false;
+    }
+
+    KeyCompar comp;
+
+    int prev = min();
+    int curr;
+
+
+    for(int i = 0; i < m_size; i++)
+    {
+
+        curr = mpt_Data[i].id;
+        if( comp( _k, curr ) and comp( curr, prev ) )
+        {
+            prev = curr;
+        }
+    }
+
+    _y = prev;
+    return true;
+}
+
+// DSAL
+
+// Binary Search
+template <typename Key, typename Data, typename KeyCompar>
+int DSAL<Key, Data, KeyCompar>::_find( const Key & _x) const
+{
+
+    KeyCompar comp;
+    int first, last, sz;
+
+
+    sz = DAL< Key, Data, KeyCompar>::m_size;
+    last = sz -1;
+    first = 0;
+
+    while( first <= last )
+    {
+
+        int mid = ( first + last )/2;
+        int curr = DAL< Key, Data, KeyCompar>::mpt_Data[mid].id
+
+        if( _x == curr)
+        {
+            return mid;
+        }
+        else if (comp(_x, curr) )
+        {
+            last = mid-1;
+        }
+        else{
+            first = mid+1;
+        }
+
+        return -1;
+    }
+
+}
+
+
+template < typename Key, typename Data, typename KeyCompar>
+bool DSAL<Key, Data, KeyCompar>::remove( const Key & _k, Data & _s)
+{
+
+    auto &mi_size = DAL<Key, Data, KeyCompar>::m_size;
+    auto &mi_Data = DAL<Key, Data, KeyCompar>::mpt_Data;
+
+
+    //Checks for an empty Dictionary.
+    if( mi_size == 0 )
+    {
+        return false;
+    }
+
+    // Search for key _k position.
+    auto pos = _find(_k);
+
+    // If it's the first element.
+    if( pos == (mi_size -1) )
+    {
+
+        _s = mi_Data[pos].inf;
+        --mi_size;
+        return true;
+    }
+
+
+    else if( pos != -1 )
+    {
+        _s = mi_Data[ pos ].inf;
+
+        for(auto i = pos; i < mi_size-1; ++i)
+        {
+
+            mi_Data[ i ].id = mi_Data[ i +1 ].id;
+            mi_Data[ i ].inf = mi_Data[ i + 1].inf;
+        }
+
+        --mi_size;
+        return true;
+    }
+
+    return false;
+}
+
+
+
+template <typename Key, typename Data, typename KeyCompar>
+bool DSAL<Key, Data, KeyCompar>::insert( const & Key & _newID, const Data & _newInfo)
+{
+
+    auto & mi_size = DAL<Key, Data, KeyCompar>::m_size;
+    auto & mi_Data = DAL<Key, Data, KeyCompar>::mpt_Data;
+    auto & mi_capacity = DAL<Key, Data, KeyCompar>::m_capacity;
+
+
+    //Check if it'possible to insert
+    if( mi_size == mi_capacity)
+    {
+        throw std::out_of_range("Full Dictionary!! Not possible to insert");
+    }
+
+    //Compare Funciton.
+    KeyCompar comp;
+
+    //Auxiliar Key to insertion;
+    Key d_;
+
+
+    auto test_p = 0;
+    int pos = _find( _newID);
+
+    //Search the right position to insert
+    
+    while( test_p < mi_size )
+    {
+
+        d_ = mi_Data[ test_p ].id;
+        if( comp(d_, _newID ) )
+        {
+            pos = test_p;
+        }
+
+        ++test_p;
+    }
+
+    //Insertion in the end
+    if( pos == mi_size-1 )
+    {
+        mi_Data[ mi_size ].id = _newID;
+        mi_Data[ mi_size ].inf = _newInfo;
+
+        ++m_size;
+
+        return true;
+    }
+    else if( pos == -1) // Insertion at the begin
+    {
+
+        // Reorganizes the list
+        for( auto i = m_size; i > pos+1; --i)
+        {
+            mi_Data[ i ].id = mi_Data[ i-1 ].id;
+            mi_Data[ i ].inf = mi_Data[ i-1 ].inf;
+
+
+        }
+
+        mi_Data[ 0 ].id = _newID;
+        mi_Data[ 0 ].inf = _newInfo;
+
+        ++m_size;
+
+        return true;
+    }
+    else    // Otherwise it's at the middle
+    {
+        for( auto i = m_size; i > pos+1; --i)
+        {
+            mi_Data[ i ].id = mi_Data[ i-1 ].id;
+            mi_Data[ i ].inf = mi_Data[ i-1 ].inf;
+        }
+
+        mi_Data[ pos+1 ].id = _newID;
+        mi_Data[ pos+1 ].inf = _newInfo;
+
+        ++m_size;
+
+    }
+
+    return false;
+    
+
+}
+
+
+

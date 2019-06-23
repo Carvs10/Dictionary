@@ -199,7 +199,7 @@ class DSAL : public DAL < Key, Data, KeyCompar>{
 
     private:
 
-        int _find() const;
+        int _find( const Key & _x) const;
 
 
 };
