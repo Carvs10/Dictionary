@@ -363,7 +363,7 @@ bool DSAL<Key, Data, KeyCompar>::insert( const & Key & _newID, const Data & _new
     //Check if it'possible to insert
     if( mi_size == mi_capacity)
     {
-        throw std::out_of_range("Full Dictionary!! Not possible to insert");
+        throw std::out_of_range("Full Dictionary!! Not possible to insert\n");
     }
 
     //Compare Funciton.
@@ -439,5 +439,89 @@ bool DSAL<Key, Data, KeyCompar>::insert( const & Key & _newID, const Data & _new
 
 }
 
+template <typename Key, typename Data, typename KeyCompar>
+Key DSAL<Key, Data, KeyCompar>::min() const
+{
+    auto & mi_size = DAL<Key, Data, KeyCompar>::m_size;
+    auto & mi_Data = DAL<Key, Data, KeyCompar>::mpt_Data;
+
+    //Check for an empty dictionary.
+    if( mi_size == 0)
+    {
+        throw std::out_of_range(" Empty Dictionary!\n" );
+    }
+
+    return mi_Data[0].id;
+}
 
 
+template <typename Key, typename Data, typename KeyCompar>
+Key DSAL<Key, Data, KeyCompar>::max() const
+{
+
+    auto & mi_size = DAL<Key, Data, KeyCompar>::m_size;
+    auto & mi_Data = DAL<Key, Data, KeyCompar>::mpt_Data;
+
+
+    if( mi_size == 0)
+    {
+        throw std::out_of_range( "Empty Dictionary!\n")
+    }
+
+
+    return mi_Data[ mi_size -1].id;
+}
+
+template <typename Key, typename Data, typename KeyCompar>
+bool DSAL<Key, Data, KeyCompar>::sucessor( const Key & _k, Key & _y) const
+{
+
+    auto & mi_size = DAL<Key, Data, KeyCompar>::m_size;
+    auto & mi_Data = DAL<Key, Data, KeyCompar>::mpt_Data;
+
+    // Position for key _k.
+    int pos = _find(_k );
+
+    // Exceptions
+    //Position out of range
+    if( pos == -1)
+    {
+        return false;
+    }
+    // Empty Dictionar or element is the last one.
+    if( mi_size == 0 or pos == mi_size-1)
+    {
+        return false;
+    }
+
+    _y = mi_Data[pos+1].id;
+    return true;
+}
+
+template <typename Key, typename Data, typename KeyCompar>
+bool DSAL<Key, Data, KeyCompar>::predecessor(const Key & _k, Key & _y) const
+{
+
+    auto & mi_size = DAL<Key, Data, KeyCompar>::m_size;
+    auto & mi_Data = DAL<Key, Data, KeyCompar>::mpt_Data;
+
+    // Position for key _k.
+    int pos = _find(_k );
+    
+
+    //Position out of range
+    if( pos == -1)
+    {
+        return false;
+    }
+
+    //  Empty Dictionar or element is the first one
+    if( mi_size == 0 or pos == 0)
+    {
+
+        return false;
+    }
+
+    _y = mi_Data[ pos-1 ].id;
+    return true;
+}
