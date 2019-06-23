@@ -1,8 +1,8 @@
 ///DAL
 
 ///Constuctor
-template <typename Key, typename Data, typename KeyCompar >
-DAL< Key, Data, KeyCompar >::DAL(int MaxSz)
+template <typename Key, typename Data, typename KeyComparator >
+DAL< Key, Data, KeyComparator >::DAL(int MaxSz)
     
     //Default values
     : m_size( 0 )                    
@@ -20,8 +20,8 @@ DAL< Key, Data, KeyCompar >::DAL(int MaxSz)
 }
 
 // Auxiliar Search
-template <typename Key, typename Data, typename KeyCompar >
-int DAL< Key, Data, KeyCompar >::_find( const Key & _z) const
+template <typename Key, typename Data, typename KeyComparator >
+int DAL< Key, Data, KeyComparator >::_find( const Key & _z) const
 {
     for( auto i = 0; i < m_size; i++){
 
@@ -38,8 +38,8 @@ int DAL< Key, Data, KeyCompar >::_find( const Key & _z) const
 }
 
 
-template <typename Key, typename Data, typename KeyCompar >
-bool DAL< Key, Data, KeyCompar >::search( const Key & _k, Data & _s) const
+template <typename Key, typename Data, typename KeyComparator >
+bool DAL< Key, Data, KeyComparator >::search( const Key & _k, Data & _s) const
 {
 
     //realizes the auxiliar serach
@@ -59,8 +59,8 @@ bool DAL< Key, Data, KeyCompar >::search( const Key & _k, Data & _s) const
     }
 }
 
-template <typename Key, typename Data, typename KeyCompar >
-bool DAL< Key, Data, KeyCompar >::remove( const Key & _k, Data _s)
+template <typename Key, typename Data, typename KeyComparator >
+bool DAL< Key, Data, KeyComparator>::remove( const Key & _k, Data & _s )
 {
     
     // if the list is empty 
@@ -93,8 +93,8 @@ bool DAL< Key, Data, KeyCompar >::remove( const Key & _k, Data _s)
 }
 
 
-template <typename Key, typename Data, typename KeyCompar >
-bool DAL< Key, Data, KeyCompar >::insert( const Key & _newKey, const Data& _newInfo)
+template <typename Key, typename Data, typename KeyComparator >
+bool DAL< Key, Data, KeyComparator >::insert( const Key & _newKey, const Data& _newInfo)
 {
 
 
@@ -107,7 +107,7 @@ bool DAL< Key, Data, KeyCompar >::insert( const Key & _newKey, const Data& _newI
     else
     {
         
-        mpt_Data[ m_size ].if = _newKey;
+        mpt_Data[ m_size ].id = _newKey;
         mpt_Data[ m_size ].inf = _newInfo;
 
         ++m_size;
@@ -117,8 +117,8 @@ bool DAL< Key, Data, KeyCompar >::insert( const Key & _newKey, const Data& _newI
     
 }
 
-template <typename Key, typename Data, typename KeyCompar >
-Key DAL< Key, Data, KeyCompar >::min() const
+template <typename Key, typename Data, typename KeyComparator >
+Key DAL< Key, Data, KeyComparator >::min() const
 {
 
     // Checks if the list is empty
@@ -128,7 +128,7 @@ Key DAL< Key, Data, KeyCompar >::min() const
     }
 
     // Compare Function.
-    KeyCompar comp;
+    KeyComparator comp;
 
     // Asumming first element is the minor, once the list ins't in order
     int smaller = mpt_Data[ 0 ].id;
@@ -148,8 +148,8 @@ Key DAL< Key, Data, KeyCompar >::min() const
 
 }
 
-template <typename Key, typename Data, typename KeyCompar >
-Key DAL< Key, Data, KeyCompar >::max() const
+template <typename Key, typename Data, typename KeyComparator >
+Key DAL< Key, Data, KeyComparator >::max() const
 {
 
     // Checks if the list is empty
@@ -159,29 +159,30 @@ Key DAL< Key, Data, KeyCompar >::max() const
     }
 
     // Compare Function
-    KeyCompar comp;
+    KeyComparator comp;
 
     // Asumming first element is the bigger, once the list ins't in order
-    int bigger = mpt_Data[i].id;
+    int bigger = mpt_Data[0].id;
     int curr;
 
     for( int i = 1; i < m_size; i++)
     {
 
         curr = mpt_Data[i].id;
-        if( comp( bigger, curr) )
+        if( comp( bigger, curr ) )
         {
             bigger = curr;
         }
 
-        return bigger;
     }
+
+    return bigger;
 
 }
 
 
-template <typename Key, typename Data, typename KeyCompar >
-bool DAL< Key, Data, KeyCompar >::sucessor( const & Key & _k, Key & _y) const
+template <typename Key, typename Data, typename KeyComparator >
+bool DAL< Key, Data, KeyComparator >::sucessor( const Key & _k, Key & _y) const
 {
 
     // Checks for an empty list.
@@ -202,7 +203,7 @@ bool DAL< Key, Data, KeyCompar >::sucessor( const & Key & _k, Key & _y) const
         return false;
     }
 
-    KeyCompar comp;
+    KeyComparator comp;
 
     int succ = max();
     int curr;
@@ -223,8 +224,8 @@ bool DAL< Key, Data, KeyCompar >::sucessor( const & Key & _k, Key & _y) const
 
 }
 
-template <typename Key, typename Data, typename KeyCompar >
-bool DAL< Key, Data, KeyCompar >::predecessor( const Key & _k, Key & _y)
+template <typename Key, typename Data, typename KeyComparator >
+bool DAL< Key, Data, KeyComparator >::predecessor( const Key & _k, Key & _y ) const
 {
 
     // Checks for an empty list.
@@ -245,7 +246,7 @@ bool DAL< Key, Data, KeyCompar >::predecessor( const Key & _k, Key & _y)
         return false;
     }
 
-    KeyCompar comp;
+    KeyComparator comp;
 
     int prev = min();
     int curr;
@@ -268,15 +269,15 @@ bool DAL< Key, Data, KeyCompar >::predecessor( const Key & _k, Key & _y)
 // DSAL
 
 // Binary Search
-template <typename Key, typename Data, typename KeyCompar>
-int DSAL<Key, Data, KeyCompar>::_find( const Key & _x) const
+template <typename Key, typename Data, typename KeyComparator>
+int DSAL<Key, Data, KeyComparator>::_find( const Key & _x) const
 {
 
-    KeyCompar comp;
+    KeyComparator comp;
     int first, last, sz;
 
 
-    sz = DAL< Key, Data, KeyCompar>::m_size;
+    sz = DAL< Key, Data, KeyComparator>::m_size;
     last = sz -1;
     first = 0;
 
@@ -284,9 +285,9 @@ int DSAL<Key, Data, KeyCompar>::_find( const Key & _x) const
     {
 
         int mid = ( first + last )/2;
-        int curr = DAL< Key, Data, KeyCompar>::mpt_Data[mid].id
+        int curr = DAL< Key, Data, KeyComparator>::mpt_Data[mid].id;
 
-        if( _x == curr)
+        if( _x == curr )
         {
             return mid;
         }
@@ -298,18 +299,19 @@ int DSAL<Key, Data, KeyCompar>::_find( const Key & _x) const
             first = mid+1;
         }
 
-        return -1;
     }
+
+    return -1;
 
 }
 
 
-template < typename Key, typename Data, typename KeyCompar>
-bool DSAL<Key, Data, KeyCompar>::remove( const Key & _k, Data & _s)
+template < typename Key, typename Data, typename KeyComparator>
+bool DSAL<Key, Data, KeyComparator>::remove( const Key & _k, Data & _s)
 {
 
-    auto &mi_size = DAL<Key, Data, KeyCompar>::m_size;
-    auto &mi_Data = DAL<Key, Data, KeyCompar>::mpt_Data;
+    auto &mi_size = DAL<Key, Data, KeyComparator>::m_size;
+    auto &mi_Data = DAL<Key, Data, KeyComparator>::mpt_Data;
 
 
     //Checks for an empty Dictionary.
@@ -351,13 +353,13 @@ bool DSAL<Key, Data, KeyCompar>::remove( const Key & _k, Data & _s)
 
 
 
-template <typename Key, typename Data, typename KeyCompar>
-bool DSAL<Key, Data, KeyCompar>::insert( const & Key & _newID, const Data & _newInfo)
+template <typename Key, typename Data, typename KeyComparator>
+bool DSAL<Key, Data, KeyComparator>::insert( const  Key & _newID, const Data & _newInfo)
 {
 
-    auto & mi_size = DAL<Key, Data, KeyCompar>::m_size;
-    auto & mi_Data = DAL<Key, Data, KeyCompar>::mpt_Data;
-    auto & mi_capacity = DAL<Key, Data, KeyCompar>::m_capacity;
+    auto &mi_size = DAL<Key, Data, KeyComparator>::m_size;
+    auto &mi_Data = DAL<Key, Data, KeyComparator>::mpt_Data;
+    auto &mi_capacity = DAL<Key, Data, KeyComparator>::m_capacity;
 
 
     //Check if it'possible to insert
@@ -367,7 +369,7 @@ bool DSAL<Key, Data, KeyCompar>::insert( const & Key & _newID, const Data & _new
     }
 
     //Compare Funciton.
-    KeyCompar comp;
+    KeyComparator comp;
 
     //Auxiliar Key to insertion;
     Key d_;
@@ -396,7 +398,7 @@ bool DSAL<Key, Data, KeyCompar>::insert( const & Key & _newID, const Data & _new
         mi_Data[ mi_size ].id = _newID;
         mi_Data[ mi_size ].inf = _newInfo;
 
-        ++m_size;
+        ++mi_size;
 
         return true;
     }
@@ -404,7 +406,7 @@ bool DSAL<Key, Data, KeyCompar>::insert( const & Key & _newID, const Data & _new
     {
 
         // Reorganizes the list
-        for( auto i = m_size; i > pos+1; --i)
+        for( auto i = mi_size; i > pos+1; --i)
         {
             mi_Data[ i ].id = mi_Data[ i-1 ].id;
             mi_Data[ i ].inf = mi_Data[ i-1 ].inf;
@@ -415,13 +417,13 @@ bool DSAL<Key, Data, KeyCompar>::insert( const & Key & _newID, const Data & _new
         mi_Data[ 0 ].id = _newID;
         mi_Data[ 0 ].inf = _newInfo;
 
-        ++m_size;
+        ++mi_size;
 
         return true;
     }
     else    // Otherwise it's at the middle
     {
-        for( auto i = m_size; i > pos+1; --i)
+        for( auto i = mi_size; i > pos+1; --i)
         {
             mi_Data[ i ].id = mi_Data[ i-1 ].id;
             mi_Data[ i ].inf = mi_Data[ i-1 ].inf;
@@ -430,7 +432,7 @@ bool DSAL<Key, Data, KeyCompar>::insert( const & Key & _newID, const Data & _new
         mi_Data[ pos+1 ].id = _newID;
         mi_Data[ pos+1 ].inf = _newInfo;
 
-        ++m_size;
+        ++mi_size;
 
     }
 
@@ -439,11 +441,11 @@ bool DSAL<Key, Data, KeyCompar>::insert( const & Key & _newID, const Data & _new
 
 }
 
-template <typename Key, typename Data, typename KeyCompar>
-Key DSAL<Key, Data, KeyCompar>::min() const
+template <typename Key, typename Data, typename KeyComparator>
+Key DSAL<Key, Data, KeyComparator>::min() const
 {
-    auto & mi_size = DAL<Key, Data, KeyCompar>::m_size;
-    auto & mi_Data = DAL<Key, Data, KeyCompar>::mpt_Data;
+    auto &mi_size = DAL<Key, Data, KeyComparator>::m_size;
+    auto &mi_Data = DAL<Key, Data, KeyComparator>::mpt_Data;
 
     //Check for an empty dictionary.
     if( mi_size == 0)
@@ -455,29 +457,29 @@ Key DSAL<Key, Data, KeyCompar>::min() const
 }
 
 
-template <typename Key, typename Data, typename KeyCompar>
-Key DSAL<Key, Data, KeyCompar>::max() const
+template <typename Key, typename Data, typename KeyComparator>
+Key DSAL<Key, Data, KeyComparator>::max() const
 {
 
-    auto & mi_size = DAL<Key, Data, KeyCompar>::m_size;
-    auto & mi_Data = DAL<Key, Data, KeyCompar>::mpt_Data;
+    auto &mi_size = DAL<Key, Data, KeyComparator>::m_size;
+    auto &mi_Data = DAL<Key, Data, KeyComparator>::mpt_Data;
 
 
     if( mi_size == 0)
     {
-        throw std::out_of_range( "Empty Dictionary!\n")
+        throw std::out_of_range( "Empty Dictionary!\n");
     }
 
 
     return mi_Data[ mi_size -1].id;
 }
 
-template <typename Key, typename Data, typename KeyCompar>
-bool DSAL<Key, Data, KeyCompar>::sucessor( const Key & _k, Key & _y) const
+template <typename Key, typename Data, typename KeyComparator>
+bool DSAL<Key, Data, KeyComparator>::sucessor( const Key & _k, Key & _y) const
 {
 
-    auto & mi_size = DAL<Key, Data, KeyCompar>::m_size;
-    auto & mi_Data = DAL<Key, Data, KeyCompar>::mpt_Data;
+    auto &mi_size = DAL<Key, Data, KeyComparator>::m_size;
+    auto &mi_Data = DAL<Key, Data, KeyComparator>::mpt_Data;
 
     // Position for key _k.
     int pos = _find(_k );
@@ -498,12 +500,12 @@ bool DSAL<Key, Data, KeyCompar>::sucessor( const Key & _k, Key & _y) const
     return true;
 }
 
-template <typename Key, typename Data, typename KeyCompar>
-bool DSAL<Key, Data, KeyCompar>::predecessor(const Key & _k, Key & _y) const
+template <typename Key, typename Data, typename KeyComparator>
+bool DSAL<Key, Data, KeyComparator>::predecessor(const Key & _k, Key & _y) const
 {
 
-    auto & mi_size = DAL<Key, Data, KeyCompar>::m_size;
-    auto & mi_Data = DAL<Key, Data, KeyCompar>::mpt_Data;
+    auto &mi_size = DAL<Key, Data, KeyComparator>::m_size;
+    auto &mi_Data = DAL<Key, Data, KeyComparator>::mpt_Data;
 
     // Position for key _k.
     int pos = _find(_k );

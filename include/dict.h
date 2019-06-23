@@ -4,12 +4,12 @@
 #include <iostream>
 #include <string>
 
-template < typename Key, typename Data, typename KeyCompar >
+template < typename Key, typename Data, typename KeyComparator >
 class DAL
 {
 
 
-    private:
+    protected:
         struct NodeD // Struxt of Node, represents pair (Key, Info) .
         {
             Key id; // 
@@ -89,7 +89,7 @@ class DAL
          * @return true if finds.
          */
 
-        bool sucessor ( const Key & _k, Key _y) const;
+        bool sucessor ( const Key & _k, Key & _y) const;
         
         /*! recovers in _y, the predecessor for key _k
          *
@@ -100,7 +100,7 @@ class DAL
          */
 
 
-        bool predecessor ( const Key & _k, Key _y ) const;
+        bool predecessor ( const Key & _k, Key & _y ) const;
 
 
         //! Overload of operator<< for prints the list(Dictionary)
@@ -118,20 +118,20 @@ class DAL
 
             _os << "----------------------------------------";
 
-            return os; 
+            return _os; 
         }
 
 };
 
 
-template < typename Key, typename Data, typename KeyCompar >
-class DSAL : public DAL < Key, Data, KeyCompar>{
+template < typename Key, typename Data, typename KeyComparator >
+class DSAL : public DAL < Key, Data, KeyComparator>{
 
 
     public:
 
         DSAL( int MaxSz )
-                : DAL< Key, Data, KeyCompar>(MaxSz)
+                : DAL< Key, Data, KeyComparator>(MaxSz)
         {/* empty */};
 
         virtual ~DSAL()
